@@ -1,5 +1,6 @@
 var now = dayjs();
 var today = dayjs().format("dddd, MMMM D");
+var tasksContent = ["click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!"];
 
 $("#currentDay").text(today);
 
@@ -47,12 +48,21 @@ while (i < 9) {
     else {
         var hour = $("<p>").text((i - 3) + "PM").addClass("col-1 list-group-item list-group-item-primary mb-0");
     };
-    var taskDiv = $("<div>").addClass("col-10 list-group-item list-group-item-secondary").attr("id", "task");
-    var taskText = $("<p>").addClass("fw-b").text("placeholder");
+    var taskDiv = $("<div>").addClass("col-10 list-group-item list-group-item-secondary").attr("id", "task-" + i);
+    var taskText = $("<p>").addClass("fw-b").text(tasksContent[i]);
     taskDiv.append(taskText);
-    var button = $("<button>").html("<span class='oi oi-lock-locked'></span>").addClass("col-1 btn btn-info");
+    var button = $("<button>").html("<span class='oi oi-lock-locked'></span>").addClass("col-1 btn btn-info").attr("id", "button-" + i);
     hourRowWrapper.append(hour, taskDiv, button);
     $(".container").append(hourRowWrapper);
     timeCheck(timeInt(hour.text()), taskDiv);
+
+    $("#task-" + i).on("click", "p", function() {
+        var taskInput = $("<input>");
+        $(this).replaceWith(taskInput);
+    });
+
+    $("#button-" + i).on("click", function() {
+        console.log("hello");
+    });
     i++;
 }
