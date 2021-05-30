@@ -1,48 +1,37 @@
-var date = $("#currentDay").text(moment().format('dddd') + ", " + moment().format('MMMM Do'));
+var now = dayjs();
+var today = dayjs().format("dddd, MMMM D");
+
+$("#currentDay").text(today);
+
 setInterval(function() {
-    var date = $("#currentDay").text(moment().format('dddd') + ", " + moment().format('MMMM Do'));
+    now = dayjs();
+    today = dayjs().format("dddd, MMMM D");
 }, 60000);
 
-var timeCheck = function (task, taskInfo) {
-    taskTime = task.text();
-    taskTime = taskTime.replace("AM", "");
-    taskTime = taskTime.replace("PM", "");
-    taskIndicator = task.text();
+var timeInt = function (task) {
+    taskIndicator = task;
     taskIndicator = taskIndicator.replace(/[0-9]/g, "");
-    //timeIndicator = moment().format('A');
-    timeIndicator = "PM";
-    time = 12;
-    //time = moment().format("h");
-    if (time === 12) {
-        if (taskIndicator === "PM" && taskTime < 6) {
-            taskInfo.removeClass("list-group-item-primary").addClass("list-group-item-success");
-        }
-        else if (taskTime === 12) {
-            taskInfo.removeClass("list-group-item-primary").addClass("list-group-item-danger");
-        }
+    if(taskIndicator === "AM") {
+        taskTime = task.replace("AM", "");
     }
-    else if(taskIndicator === "PM" && timeIndicator === "PM") {
-        if (time < taskTime) {
-            taskInfo.removeClass("list-group-item-primary").addClass("list-group-item-success");
-        }
-        else if (time > taskTime) {
-        }
-        else {
-            taskInfo.removeClass("list-group-item-primary").addClass("list-group-item-danger");
-        }
+    else {
+        taskTime = task.replace("PM", "");
+    };
+    taskTime = parseInt(taskTime);
+    if(taskTime < 9) {
+        taskTime += 12;
     }
-    else if(taskIndicator === "AM" && timeIndicator === "AM") {
-        if (time < taskTime) {
-            taskInfo.removeClass("list-group-item-primary").addClass("list-group-item-success");
-        }
-        else if (time > taskTime) {
-        }
-        else {
-            taskInfo.removeClass("list-group-item-primary").addClass("list-group-item-danger");
-        }
+    return taskTime;
+};
+
+var timeCheck = function (time, element) {
+    if(time < now.$H) {
     }
-    else if(taskIndicator === "PM" && timeIndicator === "AM") {
-        taskInfo.removeClass("list-group-item-primary").addClass("list-group-item-success");
+    else if(time === now.$H) {
+        element.removeClass("list-group-item-secondary").addClass("list-group-item-danger");
+    }
+    else {
+        element.removeClass("list-group-item-secondary").addClass("list-group-item-success");
     }
 };
 
@@ -64,8 +53,6 @@ while (i < 9) {
     var button = $("<button>").html("<span class='oi oi-lock-locked'></span>").addClass("col-1 btn btn-info");
     hourRowWrapper.append(hour, taskDiv, button);
     $(".container").append(hourRowWrapper);
-    timeCheck(hour, taskDiv);
+    timeCheck(timeInt(hour.text()), taskDiv);
     i++;
 }
-
-console.log(moment().format('A'));
