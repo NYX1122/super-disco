@@ -1,7 +1,12 @@
 var now = dayjs();
 var today = dayjs().format("dddd, MMMM D");
-var tasksContent = ["click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!"];
-
+var tasksContent = [];
+if(localStorage.getItem("key")) {
+    tasksContent = JSON.parse(localStorage.getItem("key"));
+}
+else {
+    var tasksContent = ["click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!", "click here to add task!"];
+}
 $("#currentDay").text(today);
 
 setInterval(function() {
@@ -56,13 +61,20 @@ while (i < 9) {
     $(".container").append(hourRowWrapper);
     timeCheck(timeInt(hour.text()), taskDiv);
 
+    var inputCarrier = ""
     $("#task-" + i).on("click", "p", function() {
-        var taskInput = $("<input>");
-        $(this).replaceWith(taskInput);
+        inputCarrier = $("<input>");
+        $(this).replaceWith(inputCarrier);
     });
 
     $("#button-" + i).on("click", function() {
-        console.log("hello");
+        var newText = $("<p>").text(inputCarrier.val());
+        inputCarrier.replaceWith(newText);
+        var buttonId = $(this).attr("id");
+        buttonId = buttonId.replace("button-", "");
+        buttonId = parseInt(buttonId);
+        tasksContent[buttonId] = inputCarrier.val();
+        localStorage.setItem("key", JSON.stringify(tasksContent));
     });
     i++;
 }
